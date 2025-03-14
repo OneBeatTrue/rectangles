@@ -12,6 +12,15 @@ public class Polygon {
         this.vertices = vertices;
     }
 
+    public Polygon rotate(double phi, Vertex center) {
+        ArrayList<Vertex> newVertices = new ArrayList<>();
+        for (Vertex vertex : vertices) {
+            newVertices.add(vertex.rotate(phi, center));
+        }
+
+        return new Polygon(newVertices);
+    }
+
     public Segment findMaxDistance() {
         if (this.vertices.size() < 2) {
             return null;
@@ -53,6 +62,7 @@ public class Polygon {
             for (int j = 0; j < intersection.size(); j++) {
                 Vertex firstVertex = intersection.get(j);
                 Vertex secondVertex = intersection.get((j + 1) % intersection.size());
+                System.out.println(firstVertex.x + " " + firstVertex.y + " " + line.check(firstVertex));
                 if (line.check(firstVertex) <= 0) {
                     updatedIntersection.add(firstVertex);
                 }
@@ -63,6 +73,7 @@ public class Polygon {
                     }
                 }
             }
+            System.out.println();
             intersection = updatedIntersection;
         }
 
