@@ -1,7 +1,6 @@
 package ru.onebeattrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Rectangle extends Polygon {
     Rectangle(ArrayList<Vertex> vertices) {
@@ -39,5 +38,26 @@ public class Rectangle extends Polygon {
                                 )
                         ).vertices
         );
+    }
+
+    Rectangle(Vertex firstVertex, Vertex secondVertex, Vertex thirdVertex) {
+        super(new ArrayList<>() {{
+            Line givenLine = new Line(firstVertex, secondVertex);
+            Line firstPerpendicularLine = givenLine.getPerpendicular(firstVertex);
+            Line secondPerpendicularLine = givenLine.getPerpendicular(secondVertex);
+            Line parallelLine = givenLine.getParallel(thirdVertex);
+            if (givenLine.check(thirdVertex) <= 0) {
+                add(firstVertex);
+                add(secondVertex);
+                add(secondPerpendicularLine.intersect(parallelLine));
+                add(firstPerpendicularLine.intersect(parallelLine));
+            }
+            else {
+                add(firstVertex);
+                add(firstPerpendicularLine.intersect(parallelLine));
+                add(secondPerpendicularLine.intersect(parallelLine));
+                add(secondVertex);
+            }
+        }});
     }
 }

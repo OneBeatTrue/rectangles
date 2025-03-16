@@ -9,6 +9,20 @@ public class Line {
         this.c = secondVertex.x * firstVertex.y - secondVertex.y * firstVertex.x;
     }
 
+    Line(double a, double b, double c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    public Line getParallel(Vertex vertex) {
+        return new Line(this.a, this.b, - a * vertex.x - b * vertex.y);
+    }
+
+    public Line getPerpendicular(Vertex vertex) {
+        return new Line(this.b, - this.a, a * vertex.y - b * vertex.x);
+    }
+
     public double check(Vertex vertex){
         return this.a * vertex.x + this.b * vertex.y + this.c;
     }
