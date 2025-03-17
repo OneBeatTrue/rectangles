@@ -38,9 +38,9 @@ public class Main {
 
         JPanel inputPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         inputPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        JPanel keyboardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        JPanel filePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        JPanel randomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        JPanel keyboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        JPanel filePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        JPanel randomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
@@ -54,7 +54,7 @@ public class Main {
 
         String[] labels = {"x1:", "y1:", "x2:", "y2:", "x3:", "y3:"};
         for (String text : labels) {
-            JPanel fieldPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+            JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
             JLabel label = new JLabel(text);
             label.setFont(labelFont);
@@ -67,7 +67,7 @@ public class Main {
             keyboardPanel.add(fieldPanel);
         }
 
-        JLabel fileLabel = new JLabel("          File");
+        JLabel fileLabel = new JLabel("File");
         fileLabel.setFont(labelFont);
         filePanel.add(fileLabel);
         JButton addFileBtn = new JButton("Add");
@@ -75,7 +75,7 @@ public class Main {
         filePanel.add(addFileBtn);
         filePanel.add(new JTextField(35));
 
-        JLabel randomLabel = new JLabel("  Random");
+        JLabel randomLabel = new JLabel("Random");
         randomLabel.setFont(labelFont);
         randomPanel.add(randomLabel);
         JButton addRandomBtn = new JButton("Add");
