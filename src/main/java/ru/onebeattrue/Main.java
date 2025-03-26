@@ -21,10 +21,11 @@ public class Main {
 
         Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+        Font gridFont = new Font("SansSerif", Font.PLAIN, 11);
 
         LoggerPanel logger = new LoggerPanel(labelFont);
         Storage storage = new Storage(logger);
-        DrawingPanel drawingPanel = new DrawingPanel(storage, logger);
+        DrawingPanel drawingPanel = new DrawingPanel(storage, logger, gridFont);
         JPanel inputPanel = new InputPanel(labelFont, buttonFont, storage, drawingPanel);
         JPanel bottomPanel = new BottomPanel(buttonFont, storage, drawingPanel, logger);
 
