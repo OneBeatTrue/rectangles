@@ -1,6 +1,8 @@
-package ru.onebeattrue;
+package ru.onebeattrue.entities;
 
-public class Line {
+import java.awt.*;
+
+public class Line extends AbstractShape {
     // ax + by + c = 0
     double a, b, c;
     Line(Vertex firstVertex, Vertex secondVertex) {
@@ -36,4 +38,7 @@ public class Line {
                 (this.c * other.a - this.a * other.c) / (this.a * other.b - this.b * other.a)
         );
     }
+
+    @Override
+    public void draw(Graphics g) {}
 }

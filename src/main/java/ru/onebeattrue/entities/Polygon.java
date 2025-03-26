@@ -1,8 +1,9 @@
-package ru.onebeattrue;
+package ru.onebeattrue.entities;
 
+import java.awt.*;
 import java.util.ArrayList;
 
-public class Polygon {
+public class Polygon extends AbstractShape {
     ArrayList<Vertex> vertices;
 
     Polygon() {
@@ -29,25 +30,36 @@ public class Polygon {
                 this.vertices.get(0),
                 this.vertices.get(1)
         );
-        double maxLength = maxSegment.length();
         for (Vertex firstVertex : this.vertices) {
             for (Vertex secondVertex : this.vertices) {
-                if (firstVertex == secondVertex) {
-                    continue;
-                }
-
-                Segment segment = new Segment(
-                        firstVertex,
-                        secondVertex
-                );
-                if (segment.length() > maxLength) {
-                    maxSegment = segment;
-                    maxLength = segment.length();
+                if (firstVertex != secondVertex) {
+                    Segment segment = new Segment(
+                            firstVertex,
+                            secondVertex
+                    );
+                    if (segment.length() > maxSegment.length()) {
+                        maxSegment = segment;
+                    }
                 }
             }
         }
 
         return maxSegment;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        int n = vertices.size() + 1;
+        int[] xPoints = new int[n];
+        int[] yPoints = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            xPoints[i] = (int) vertices.get(i % vertices.size()).x;
+            yPoints[i] = (int) vertices.get(i % vertices.size()).y;
+        }
+
+        g.setColor(this.color);
+        g.drawPolyline(xPoints, yPoints, n);
     }
 
     public Polygon intersect(Polygon other) {
@@ -73,7 +85,6 @@ public class Polygon {
                     }
                 }
             }
-            System.out.println();
             intersection = updatedIntersection;
         }
 

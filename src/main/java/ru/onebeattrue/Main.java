@@ -1,32 +1,18 @@
 package ru.onebeattrue;
 
+import ru.onebeattrue.services.DrawingPanel;
+import ru.onebeattrue.services.KeyboardPanel;
+import ru.onebeattrue.services.LoggerPanel;
+import ru.onebeattrue.services.Storage;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Main::createAndShowGUI);
-//        Rectangle r1 = new Rectangle(new Vertex(0, 0), new Vertex(6, 6));
-//        Rectangle r2 = new Rectangle(new Vertex(0, 0), new Vertex(6, 6), Math.PI / 2);
-//        Polygon p = r1.intersect(r2);
-//        Segment s = p.findMaxDistance();
-//        System.out.println();
-//        for (Vertex v : r1.vertices) {
-//            System.out.println(v.x + " " + v.y);
-//        }
-//        System.out.println();
-//        for (Vertex v : r2.vertices) {
-//            System.out.println(v.x + " " + v.y);
-//        }
-//        System.out.println();
-//        for (Vertex v : p.vertices) {
-//            System.out.println(v.x + " " + v.y);
-//        }
-//        System.out.println();
-//        System.out.println(s == null);
-//        System.out.println(s.length());
-//        System.out.println(s.firstVertex.x + " " + s.firstVertex.y);
-//        System.out.println(s.secondVertex.x + " " + s.secondVertex.y);
     }
 
     private static void createAndShowGUI() {
@@ -36,36 +22,33 @@ public class Main {
         frame.setLayout(new BorderLayout(5, 5));
         frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        JPanel inputPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        inputPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        JPanel keyboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        JPanel filePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        JPanel randomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
         Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
 
-        JLabel keyboardLabel = new JLabel("Keyboard");
-        keyboardLabel.setFont(labelFont);
-        keyboardPanel.add(keyboardLabel);
-        JButton addKeyboardBtn = new JButton("Add");
-        addKeyboardBtn.setFont(buttonFont);
-        keyboardPanel.add(addKeyboardBtn);
+        LoggerPanel logger = new LoggerPanel(labelFont);
+        Storage storage = new Storage(logger);
+        JPanel drawingPanel = new DrawingPanel(storage);
 
-        String[] labels = {"x1:", "y1:", "x2:", "y2:", "x3:", "y3:"};
-        for (String text : labels) {
-            JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        frame.add(createInputPanel(labelFont, buttonFont, storage, drawingPanel), BorderLayout.NORTH);
+        frame.add(drawingPanel, BorderLayout.CENTER);
+        frame.add(createBottomPanel(labelFont, buttonFont, logger), BorderLayout.SOUTH);
 
-            JLabel label = new JLabel(text);
-            label.setFont(labelFont);
-            fieldPanel.add(label);
+        frame.setVisible(true);
+    }
 
-            JTextField textField = new JTextField(5);
-            textField.setFont(labelFont);
-            fieldPanel.add(textField);
+    private static JPanel createInputPanel(Font labelFont, Font buttonFont, Storage storage, JPanel drawingPanel) {
+        JPanel inputPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        inputPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-            keyboardPanel.add(fieldPanel);
-        }
+        inputPanel.add(new KeyboardPanel(labelFont, buttonFont, storage, drawingPanel));
+        inputPanel.add(createFilePanel(labelFont, buttonFont));
+        inputPanel.add(createRandomPanel(labelFont, buttonFont));
+
+        return inputPanel;
+    }
+
+    private static JPanel createFilePanel(Font labelFont, Font buttonFont) {
+        JPanel filePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         JLabel fileLabel = new JLabel("File");
         fileLabel.setFont(labelFont);
@@ -75,6 +58,12 @@ public class Main {
         filePanel.add(addFileBtn);
         filePanel.add(new JTextField(35));
 
+        return filePanel;
+    }
+
+    private static JPanel createRandomPanel(Font labelFont, Font buttonFont) {
+        JPanel randomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
         JLabel randomLabel = new JLabel("Random");
         randomLabel.setFont(labelFont);
         randomPanel.add(randomLabel);
@@ -82,27 +71,22 @@ public class Main {
         addRandomBtn.setFont(buttonFont);
         randomPanel.add(addRandomBtn);
 
-        inputPanel.add(keyboardPanel);
-        inputPanel.add(filePanel);
-        inputPanel.add(randomPanel);
+        return randomPanel;
+    }
 
-        JPanel drawingPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawRect(50, 50, 200, 150);
-            }
-        };
-        drawingPanel.setPreferredSize(new Dimension(960, 540));
-        drawingPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    private static JPanel createBottomPanel(Font labelFont, Font buttonFont, JPanel logPanel) {
+        JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
 
-        JPanel logPanel = new JPanel(new BorderLayout());
-        JTextArea logArea = new JTextArea(3, 50);
-        logArea.setEditable(false);
-        logPanel.add(new JScrollPane(logArea), BorderLayout.CENTER);
-        logPanel.setPreferredSize(new Dimension(960, 100));
+        bottomPanel.add(logPanel, BorderLayout.CENTER);
+        bottomPanel.add(createControlPanel(buttonFont), BorderLayout.EAST);
+
+        return bottomPanel;
+    }
+
+    private static JPanel createControlPanel(Font buttonFont) {
 
         JPanel controlPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+
         JButton findBtn = new JButton("Find");
         findBtn.setFont(buttonFont);
         JButton resetBtn = new JButton("Reset");
@@ -111,14 +95,6 @@ public class Main {
         controlPanel.add(resetBtn);
         controlPanel.setPreferredSize(new Dimension(320, 100));
 
-        JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
-        bottomPanel.add(logPanel, BorderLayout.CENTER);
-        bottomPanel.add(controlPanel, BorderLayout.EAST);
-
-        frame.add(inputPanel, BorderLayout.NORTH);
-        frame.add(drawingPanel, BorderLayout.CENTER);
-        frame.add(bottomPanel, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
+        return controlPanel;
     }
 }
