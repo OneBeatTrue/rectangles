@@ -40,7 +40,7 @@ public class Rectangle extends Polygon {
         );
     }
 
-    public Rectangle(Vertex firstVertex, Vertex secondVertex, Vertex thirdVertex) { // задается прямоугольник
+    public Rectangle(Vertex firstVertex, Vertex secondVertex, Vertex thirdVertex) {
         super(new ArrayList<>() {{
             Line givenLine = new Line(firstVertex, secondVertex);
             if (givenLine.check(thirdVertex) == 0.0) {
@@ -50,15 +50,15 @@ public class Rectangle extends Polygon {
                 Line firstPerpendicularLine = givenLine.getPerpendicular(firstVertex);
                 Line secondPerpendicularLine = givenLine.getPerpendicular(secondVertex);
                 Line parallelLine = givenLine.getParallel(thirdVertex);
-                if (givenLine.check(thirdVertex) <= 0) { // проверка на обход точек
+                if (givenLine.check(thirdVertex) <= 0) {
                     add(firstVertex);
                     add(secondVertex);
-                    add(secondPerpendicularLine.intersect(parallelLine)); // точка пересечения
-                    add(firstPerpendicularLine.intersect(parallelLine)); // точка пересечения
+                    add(secondPerpendicularLine.intersect(parallelLine));
+                    add(firstPerpendicularLine.intersect(parallelLine));
                 } else {
                     add(firstVertex);
-                    add(firstPerpendicularLine.intersect(parallelLine)); // точка пересечения
-                    add(secondPerpendicularLine.intersect(parallelLine)); // точка пересечения
+                    add(firstPerpendicularLine.intersect(parallelLine));
+                    add(secondPerpendicularLine.intersect(parallelLine));
                     add(secondVertex);
                 }
             }

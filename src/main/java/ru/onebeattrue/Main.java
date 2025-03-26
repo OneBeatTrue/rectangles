@@ -1,9 +1,6 @@
 package ru.onebeattrue;
 
-import ru.onebeattrue.services.DrawingPanel;
-import ru.onebeattrue.services.KeyboardPanel;
-import ru.onebeattrue.services.LoggerPanel;
-import ru.onebeattrue.services.Storage;
+import ru.onebeattrue.services.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,90 +24,17 @@ public class Main {
 
         LoggerPanel logger = new LoggerPanel(labelFont);
         Storage storage = new Storage(logger);
-        JPanel drawingPanel = new DrawingPanel(storage);
+        DrawingPanel drawingPanel = new DrawingPanel(storage, logger);
+        JPanel inputPanel = new InputPanel(labelFont, buttonFont, storage, drawingPanel);
+        JPanel bottomPanel = new BottomPanel(buttonFont, storage, drawingPanel, logger);
 
-        frame.add(createInputPanel(labelFont, buttonFont, storage, drawingPanel), BorderLayout.NORTH);
+
+        frame.add(inputPanel, BorderLayout.NORTH);
         frame.add(drawingPanel, BorderLayout.CENTER);
-        frame.add(createBottomPanel(labelFont, buttonFont, logger, storage, drawingPanel), BorderLayout.SOUTH);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+
+        logger.log("Hello. You can add rectangles and find maximal intersection diameter. Enjoy!");
 
         frame.setVisible(true);
-    }
-
-    private static JPanel createInputPanel(Font labelFont, Font buttonFont, Storage storage, JPanel drawingPanel) {
-        JPanel inputPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        inputPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-        inputPanel.add(new KeyboardPanel(labelFont, buttonFont, storage, drawingPanel));
-        inputPanel.add(createFilePanel(labelFont, buttonFont));
-        inputPanel.add(createRandomPanel(labelFont, buttonFont));
-
-        return inputPanel;
-    }
-
-    private static JPanel createFilePanel(Font labelFont, Font buttonFont) {
-        JPanel filePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
-        JLabel fileLabel = new JLabel("File");
-        fileLabel.setFont(labelFont);
-        filePanel.add(fileLabel);
-        JButton addFileBtn = new JButton("Add");
-        addFileBtn.setFont(buttonFont);
-        filePanel.add(addFileBtn);
-        filePanel.add(new JTextField(35));
-
-        return filePanel;
-    }
-
-    private static JPanel createRandomPanel(Font labelFont, Font buttonFont) {
-        JPanel randomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
-        JLabel randomLabel = new JLabel("Random");
-        randomLabel.setFont(labelFont);
-        randomPanel.add(randomLabel);
-        JButton addRandomBtn = new JButton("Add");
-        addRandomBtn.setFont(buttonFont);
-        randomPanel.add(addRandomBtn);
-
-        return randomPanel;
-    }
-
-    private static JPanel createBottomPanel(Font labelFont, Font buttonFont, JPanel logPanel, Storage storage, JPanel drawingPanel) {
-        JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
-
-        bottomPanel.add(logPanel, BorderLayout.CENTER);
-        bottomPanel.add(createControlPanel(buttonFont, storage, drawingPanel), BorderLayout.EAST);
-
-        return bottomPanel;
-    }
-
-    private static JPanel createControlPanel(Font buttonFont, Storage storage, JPanel drawingPanel) {
-
-        JPanel controlPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-
-        JButton findBtn = new JButton("Find");
-        findBtn.setFont(buttonFont);
-        findBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                storage.findMaxDistance();
-                drawingPanel.repaint();
-            }
-        });
-
-        JButton resetBtn = new JButton("Reset");
-        resetBtn.setFont(buttonFont);
-        resetBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                storage.clear();
-                drawingPanel.repaint();
-            }
-        });
-
-        controlPanel.add(findBtn);
-        controlPanel.add(resetBtn);
-        controlPanel.setPreferredSize(new Dimension(320, 100));
-
-        return controlPanel;
     }
 }

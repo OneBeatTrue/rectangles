@@ -4,6 +4,7 @@ import ru.onebeattrue.entities.*;
 import ru.onebeattrue.entities.Polygon;
 import ru.onebeattrue.entities.Rectangle;
 import ru.onebeattrue.entities.Shape;
+import ru.onebeattrue.models.CoordinateRanges;
 import ru.onebeattrue.models.DrawInfo;
 
 import java.awt.*;
@@ -20,39 +21,61 @@ public class Storage {
         this.logger = logger;
     }
 
-//    public void add(String filename) {
-//        try {
+    public void add(String filename) {
+        try {
 //            Polygon polygon = new Rectangle(new Vertex(x1, y1), new Vertex(x2, y2), new Vertex(x3, y3));
 //            add(polygon);
-//        } catch (IllegalArgumentException e) {
-//            this.error(e.getMessage());
-//        }
-//    }
+        } catch (IllegalArgumentException e) {
+            this.error(e.getMessage());
+        }
+    }
 
     public void add(String x1, String y1, String x2, String y2, String x3, String y3) {
         try {
-            Polygon polygon = new Rectangle(new Vertex(x1, y1), new Vertex(x2, y2), new Vertex(x3, y3));
-            add(polygon);
+            Vertex firstVertex = new Vertex(x1, y1);
+            Vertex secondVertex = new Vertex(x2, y2);
+            Vertex thirdVertex = new Vertex(x3, y3);
+            this.add(firstVertex, secondVertex, thirdVertex);
             this.logger.log("Rectangle successfully added.");
         } catch (IllegalArgumentException e) {
             this.error(e.getMessage());
         }
     }
 
-    private void error(String errorMessage) {
-        logger.log("[ERROR] " + errorMessage);
+    public void add(CoordinateRanges ranges) {
+        this.add(generateVertex(ranges), generateVertex(ranges), generateVertex(ranges));
+    }
+
+    public void add(Vertex firstVertex, Vertex secondVertex, Vertex thirdVertex) {
+        try {
+            Polygon polygon = new Rectangle(firstVertex, secondVertex, thirdVertex);
+            this.add(polygon);
+            this.logger.log("Rectangle successfully added.");
+        } catch (IllegalArgumentException e) {
+            this.error(e.getMessage());
+        }
     }
 
     public void add(Polygon polygon) {
-        lowlight();
+        this.lowlight();
         this.polygons.add(polygon);
     }
 
     public void clear() {
         this.polygons.clear();
-        lowlight();
+        this.logger.log("Field is clear.");
+        this.lowlight();
     }
 
+    private void error(String errorMessage) {
+        logger.log("[ERROR] " + errorMessage);
+    }
+
+    private Vertex generateVertex(CoordinateRanges ranges) {
+        double x = (Math.random() - 0.5) * ranges.xRange();
+        double y = (Math.random() - 0.5) * ranges.yRange();
+        return new Vertex(x, y);
+    }
     private void lowlight(){
         if (!this.highlights.isEmpty()) {
             for (Shape shape : this.highlights) {
@@ -62,8 +85,8 @@ public class Storage {
         }
     }
 
-    public Segment findMaxDistance() {
-        lowlight();
+    public void findMaxDistance() {
+        this.lowlight();
         Segment maxSegment = null;
         for (int i = 0; i < this.polygons.size(); i++) {
             for (int j = i + 1; j < this.polygons.size(); j++) {
@@ -94,9 +117,8 @@ public class Storage {
             this.error("Intersections not found.");
         }
         else {
-            this.logger.log("Intersection diameter is " + String.format("%.3f", maxSegment.length()) + " length.");
+            this.logger.log("Maximal intersection diameter is " + String.format("%.3f", maxSegment.length()) + " long.");
         }
-        return maxSegment;
     }
 
 

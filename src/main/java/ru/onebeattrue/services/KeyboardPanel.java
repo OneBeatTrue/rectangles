@@ -9,13 +9,7 @@ import java.awt.event.ActionListener;
 public class KeyboardPanel extends JPanel {
     private JTextField[] textFields = new JTextField[6];
 
-    private Storage storage;
-
-    private JPanel drawingPanel;
-
     public KeyboardPanel(Font labelFont, Font buttonFont, Storage storage, JPanel drawingPanel) {
-        this.storage = storage;
-        this.drawingPanel = drawingPanel;
         setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         JLabel keyboardLabel = new JLabel("Keyboard");
