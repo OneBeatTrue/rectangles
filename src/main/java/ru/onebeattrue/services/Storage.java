@@ -8,6 +8,10 @@ import ru.onebeattrue.models.CoordinateRanges;
 import ru.onebeattrue.models.DrawInfo;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Storage {
@@ -22,11 +26,32 @@ public class Storage {
     }
 
     public void add(String filename) {
-        try {
-//            Polygon polygon = new Rectangle(new Vertex(x1, y1), new Vertex(x2, y2), new Vertex(x3, y3));
-//            add(polygon);
-        } catch (IllegalArgumentException e) {
-            this.error(e.getMessage());
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            int lineIndex = 0;
+            while ((line = reader.readLine()) != null) {
+                lineIndex++;
+
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length != 6) {
+                    this.error("(Line " + lineIndex + ") " + "Must be exactly 6 arguments, line has " + parts.length + ".");
+                    continue;
+                }
+
+                try {
+                    Vertex firstVertex = new Vertex(parts[0], parts[1]);
+                    Vertex secondVertex = new Vertex(parts[2], parts[3]);
+                    Vertex thirdVertex = new Vertex(parts[4], parts[5]);
+                    Polygon polygon = new Rectangle(firstVertex, secondVertex, thirdVertex);
+                    this.add(polygon);
+                } catch (IllegalArgumentException e) {
+                    this.error("(Line " + lineIndex + ") " + e.getMessage());
+                }
+            }
+        } catch (FileNotFoundException e) {
+            this.error("File " + filename + " not found.");
+        } catch (IOException e) {
+            this.error("Failure while reading " + filename);
         }
     }
 
@@ -36,7 +61,6 @@ public class Storage {
             Vertex secondVertex = new Vertex(x2, y2);
             Vertex thirdVertex = new Vertex(x3, y3);
             this.add(firstVertex, secondVertex, thirdVertex);
-            this.logger.log("Rectangle successfully added.");
         } catch (IllegalArgumentException e) {
             this.error(e.getMessage());
         }
@@ -50,7 +74,6 @@ public class Storage {
         try {
             Polygon polygon = new Rectangle(firstVertex, secondVertex, thirdVertex);
             this.add(polygon);
-            this.logger.log("Rectangle successfully added.");
         } catch (IllegalArgumentException e) {
             this.error(e.getMessage());
         }
@@ -59,6 +82,7 @@ public class Storage {
     public void add(Polygon polygon) {
         this.lowlight();
         this.polygons.add(polygon);
+        this.logger.log("Rectangle successfully added.");
     }
 
     public void clear() {
