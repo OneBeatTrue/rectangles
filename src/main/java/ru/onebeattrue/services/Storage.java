@@ -4,6 +4,7 @@ import ru.onebeattrue.entities.*;
 import ru.onebeattrue.entities.Polygon;
 import ru.onebeattrue.entities.Rectangle;
 import ru.onebeattrue.entities.Shape;
+import ru.onebeattrue.models.DrawInfo;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -93,17 +94,20 @@ public class Storage {
             this.error("Intersections not found.");
         }
         else {
-            this.logger.log("Maximal intersection diameter is " + maxSegment.length() + " length.");
+            this.logger.log("Intersection diameter is " + String.format("%.3f", maxSegment.length()) + " length.");
         }
         return maxSegment;
     }
 
-    public void draw(Graphics g) {
+
+    public ArrayList<DrawInfo> getDrawInfo() {
+        ArrayList<DrawInfo> drawInfo = new ArrayList<>();
         for (Polygon polygon : this.polygons) {
-            polygon.draw(g);
+            drawInfo.add(polygon.getDrawInfo());
         }
         for (Shape shape : this.highlights) {
-            shape.draw(g);
+            drawInfo.add(shape.getDrawInfo());
         }
+        return drawInfo;
     }
 }

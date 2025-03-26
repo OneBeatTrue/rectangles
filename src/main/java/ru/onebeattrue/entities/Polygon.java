@@ -1,5 +1,7 @@
 package ru.onebeattrue.entities;
 
+import ru.onebeattrue.models.DrawInfo;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -48,18 +50,10 @@ public class Polygon extends AbstractShape {
     }
 
     @Override
-    public void draw(Graphics g) {
-        int n = vertices.size() + 1;
-        int[] xPoints = new int[n];
-        int[] yPoints = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            xPoints[i] = (int) vertices.get(i % vertices.size()).x;
-            yPoints[i] = (int) vertices.get(i % vertices.size()).y;
-        }
-
-        g.setColor(this.color);
-        g.drawPolyline(xPoints, yPoints, n);
+    public DrawInfo getDrawInfo() {
+        ArrayList<Vertex> verts = this.vertices;
+        verts.add(this.vertices.getFirst());
+        return new DrawInfo(verts, this.color);
     }
 
     public Polygon intersect(Polygon other) {
@@ -74,7 +68,6 @@ public class Polygon extends AbstractShape {
             for (int j = 0; j < intersection.size(); j++) {
                 Vertex firstVertex = intersection.get(j);
                 Vertex secondVertex = intersection.get((j + 1) % intersection.size());
-                System.out.println(firstVertex.x + " " + firstVertex.y + " " + line.check(firstVertex));
                 if (line.check(firstVertex) <= 0) {
                     updatedIntersection.add(firstVertex);
                 }

@@ -1,5 +1,7 @@
 package ru.onebeattrue.services;
 
+import ru.onebeattrue.models.DrawInfo;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseWheelEvent;
@@ -12,7 +14,7 @@ public class DrawingPanel extends JPanel {
 
     public DrawingPanel(Storage storage) {
         this.storage = storage;
-//        setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
         addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -21,9 +23,11 @@ public class DrawingPanel extends JPanel {
 
                 if (rotation < 0) {
                     scale *= zoomFactor;
-                } else {
+                }
+                else {
                     scale /= zoomFactor;
                 }
+
                 repaint();
             }
         });
@@ -32,12 +36,22 @@ public class DrawingPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        for (DrawInfo drawInfo : this.storage.getDrawInfo()) {
+            if (drawInfo == null) {
+                continue;
+            }
 
-        g2.translate(getWidth() / 2, getHeight() / 2);
-        g2.scale(scale, scale);
-        g2.translate(-getWidth() / 2, -getHeight() / 2);
+            int n = drawInfo.vertices().size();
+            int[] xPoints = new int[n];
+            int[] yPoints = new int[n];
 
-        storage.draw(g2);
+            for (int i = 0; i < n; i++) {
+                xPoints[i] = (int) (drawInfo.vertices().get(i).x * this.scale + (double) getWidth() / 2);
+                yPoints[i] = (int) (-drawInfo.vertices().get(i).y * this.scale + (double) getHeight() / 2);
+            }
+
+            g.setColor(drawInfo.color());
+            g.drawPolyline(xPoints, yPoints, n);
+        }
     }
 }

@@ -44,7 +44,7 @@ public class Rectangle extends Polygon {
         super(new ArrayList<>() {{
             Line givenLine = new Line(firstVertex, secondVertex);
             if (givenLine.check(thirdVertex) == 0.0) {
-                throw new IllegalArgumentException("Point must not lay ont the same line.");
+                throw new IllegalArgumentException("Points must not lay ont the same line.");
             }
             else {
                 Line firstPerpendicularLine = givenLine.getPerpendicular(firstVertex);

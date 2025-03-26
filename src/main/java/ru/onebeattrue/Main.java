@@ -31,7 +31,7 @@ public class Main {
 
         frame.add(createInputPanel(labelFont, buttonFont, storage, drawingPanel), BorderLayout.NORTH);
         frame.add(drawingPanel, BorderLayout.CENTER);
-        frame.add(createBottomPanel(labelFont, buttonFont, logger), BorderLayout.SOUTH);
+        frame.add(createBottomPanel(labelFont, buttonFont, logger, storage, drawingPanel), BorderLayout.SOUTH);
 
         frame.setVisible(true);
     }
@@ -74,23 +74,39 @@ public class Main {
         return randomPanel;
     }
 
-    private static JPanel createBottomPanel(Font labelFont, Font buttonFont, JPanel logPanel) {
+    private static JPanel createBottomPanel(Font labelFont, Font buttonFont, JPanel logPanel, Storage storage, JPanel drawingPanel) {
         JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
 
         bottomPanel.add(logPanel, BorderLayout.CENTER);
-        bottomPanel.add(createControlPanel(buttonFont), BorderLayout.EAST);
+        bottomPanel.add(createControlPanel(buttonFont, storage, drawingPanel), BorderLayout.EAST);
 
         return bottomPanel;
     }
 
-    private static JPanel createControlPanel(Font buttonFont) {
+    private static JPanel createControlPanel(Font buttonFont, Storage storage, JPanel drawingPanel) {
 
         JPanel controlPanel = new JPanel(new GridLayout(2, 1, 5, 5));
 
         JButton findBtn = new JButton("Find");
         findBtn.setFont(buttonFont);
+        findBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                storage.findMaxDistance();
+                drawingPanel.repaint();
+            }
+        });
+
         JButton resetBtn = new JButton("Reset");
         resetBtn.setFont(buttonFont);
+        resetBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                storage.clear();
+                drawingPanel.repaint();
+            }
+        });
+
         controlPanel.add(findBtn);
         controlPanel.add(resetBtn);
         controlPanel.setPreferredSize(new Dimension(320, 100));

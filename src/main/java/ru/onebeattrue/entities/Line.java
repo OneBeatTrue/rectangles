@@ -1,6 +1,9 @@
 package ru.onebeattrue.entities;
 
+import ru.onebeattrue.models.DrawInfo;
+
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Line extends AbstractShape {
     // ax + by + c = 0
@@ -40,5 +43,5 @@ public class Line extends AbstractShape {
     }
 
     @Override
-    public void draw(Graphics g) {}
+    public DrawInfo getDrawInfo() { return null; }
 }

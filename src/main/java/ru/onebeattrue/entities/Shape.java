@@ -1,9 +1,10 @@
 package ru.onebeattrue.entities;
 
-import java.awt.*;
+import ru.onebeattrue.models.DrawInfo;
+
 
 public interface Shape {
     void highlight();
     void lowlight();
-    void draw(Graphics g);
+    DrawInfo getDrawInfo();
 }
