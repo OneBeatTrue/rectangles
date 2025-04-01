@@ -19,13 +19,10 @@ public class DrawingPanel extends JPanel {
 
     private ArrayList<Vertex> clicks;
 
-    private Logger logger;
-
     private Font gridFont;
 
     public DrawingPanel(Storage storage, Logger logger, Font gridFont) {
         this.storage = storage;
-        this.logger = logger;
         this.gridFont = gridFont;
         clicks = new ArrayList<>();
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
