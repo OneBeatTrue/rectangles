@@ -3,6 +3,7 @@ package ru.onebeattrue.services;
 import ru.onebeattrue.entities.Vertex;
 import ru.onebeattrue.models.CoordinateRanges;
 import ru.onebeattrue.models.DrawInfo;
+import ru.onebeattrue.models.Globals;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,14 +18,11 @@ public class DrawingPanel extends JPanel {
 
     private Storage storage;
 
-    private ArrayList<Vertex> clicks;
-
     private Font gridFont;
 
-    public DrawingPanel(Storage storage, Logger logger, Font gridFont) {
+    public DrawingPanel(Storage storage, Font gridFont) {
         this.storage = storage;
         this.gridFont = gridFont;
-        clicks = new ArrayList<>();
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         addMouseWheelListener(new MouseWheelListener() {
             @Override
@@ -33,10 +31,14 @@ public class DrawingPanel extends JPanel {
                 double zoomFactor = 1.1;
 
                 if (rotation < 0) {
-                    scale *= zoomFactor;
+                    if (scale < Globals.maxScale) {
+                        scale *= zoomFactor;
+                    }
                 }
                 else {
-                    scale /= zoomFactor;
+                    if (scale > Globals.minScale) {
+                        scale /= zoomFactor;
+                    }
                 }
 
                 repaint();
@@ -48,14 +50,8 @@ public class DrawingPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 double clickX = ((double) e.getX() - (double) getWidth() / 2) / scale;
                 double clickY = -((double) e.getY() - (double) getHeight() / 2) / scale;
-                clicks.add(new Vertex(clickX, clickY));
-                logger.log("Added point (" + String.format("%.3f , %.3f", clickX, clickY) + ").");
-
-                if (clicks.size() == 3) {
-                    storage.add(clicks.get(0), clicks.get(1), clicks.get(2));
-                    clicks.clear();
-                    repaint();
-                }
+                storage.add(new Vertex(clickX, clickY));
+                repaint();
             }
         });
     }
@@ -64,8 +60,9 @@ public class DrawingPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        drawGrid(g2, 50);
+        drawGrid(g2, Globals.gridCell);
         g2.setStroke(new BasicStroke(3));
+        int pointSize = 10;
         for (DrawInfo drawInfo : this.storage.getDrawInfo()) {
             if (drawInfo == null) {
                 continue;
@@ -81,7 +78,12 @@ public class DrawingPanel extends JPanel {
             }
 
             g2.setColor(drawInfo.color());
-            g2.drawPolyline(xPoints, yPoints, n);
+            if (n == 1) {
+                g2.fillOval(xPoints[0] - pointSize / 2, yPoints[0] - pointSize / 2, pointSize, pointSize);
+            }
+            else {
+                g2.drawPolyline(xPoints, yPoints, n);
+            }
         }
     }
 
@@ -131,6 +133,7 @@ public class DrawingPanel extends JPanel {
         g2.drawLine(0, midY, getWidth(), midY);
         g2.drawLine(midX, 0, midX, getHeight());
         g2.drawString("0", midX - 10, midY + 10);
+        g2.drawString(String.format("1:%.5f", 1 / this.scale), 0, 10);
     }
 
 

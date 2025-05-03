@@ -1,8 +1,9 @@
 package ru.onebeattrue.entities;
 
 import ru.onebeattrue.models.DrawInfo;
+import ru.onebeattrue.models.Globals;
 
-import java.awt.*;
+import java.util.ArrayList;
 
 public class Vertex extends AbstractShape {
     public double x, y;
@@ -38,5 +39,7 @@ public class Vertex extends AbstractShape {
     }
 
     @Override
-    public DrawInfo getDrawInfo() { return null; }
+    public DrawInfo getDrawInfo() {
+        return new DrawInfo(new ArrayList<>() {{ add(new Vertex(x, y)); }}, this.color);
+    }
 }

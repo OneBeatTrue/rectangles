@@ -15,14 +15,14 @@ public class Polygon extends AbstractShape {
         this.vertices = vertices;
     }
 
-    public Polygon rotate(double phi, Vertex center) {
-        ArrayList<Vertex> newVertices = new ArrayList<>();
-        for (Vertex vertex : vertices) {
-            newVertices.add(vertex.rotate(phi, center));
-        }
-
-        return new Polygon(newVertices);
-    }
+//    public Polygon rotate(double phi, Vertex center) {
+//        ArrayList<Vertex> newVertices = new ArrayList<>();
+//        for (Vertex vertex : vertices) {
+//            newVertices.add(vertex.rotate(phi, center));
+//        }
+//
+//        return new Polygon(newVertices);
+//    }
 
     public Segment findMaxDistance() {
         if (this.vertices.size() < 2) {

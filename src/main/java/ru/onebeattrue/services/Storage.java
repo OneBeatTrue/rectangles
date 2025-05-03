@@ -6,6 +6,7 @@ import ru.onebeattrue.entities.Rectangle;
 import ru.onebeattrue.entities.Shape;
 import ru.onebeattrue.models.CoordinateRanges;
 import ru.onebeattrue.models.DrawInfo;
+import ru.onebeattrue.models.Globals;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -19,10 +20,21 @@ public class Storage {
 
     private ArrayList<Shape> highlights = new ArrayList<>();
 
+    private ArrayList<Vertex> clicks = new ArrayList<>();
+
     private Logger logger;
 
     public Storage(Logger logger) {
         this.logger = logger;
+    }
+
+    public void add(Vertex vertex) {
+        clicks.add(vertex);
+        logger.log("Added point (" + String.format("%.3f , %.3f", vertex.x, vertex.y) + ").");
+        if (clicks.size() == 3) {
+            this.add(clicks.get(0), clicks.get(1), clicks.get(2));
+            this.clicks.clear();
+        }
     }
 
     public void add(String filename) {
@@ -39,9 +51,9 @@ public class Storage {
                 }
 
                 try {
-                    Vertex firstVertex = new Vertex(parts[0], parts[1]);
-                    Vertex secondVertex = new Vertex(parts[2], parts[3]);
-                    Vertex thirdVertex = new Vertex(parts[4], parts[5]);
+                    Vertex firstVertex = checkCoordinates(new Vertex(parts[0], parts[1]));
+                    Vertex secondVertex = checkCoordinates(new Vertex(parts[2], parts[3]));
+                    Vertex thirdVertex = checkCoordinates(new Vertex(parts[4], parts[5]));
                     Polygon polygon = new Rectangle(firstVertex, secondVertex, thirdVertex);
                     this.add(polygon);
                 } catch (IllegalArgumentException e) {
@@ -57,9 +69,9 @@ public class Storage {
 
     public void add(String x1, String y1, String x2, String y2, String x3, String y3) {
         try {
-            Vertex firstVertex = new Vertex(x1, y1);
-            Vertex secondVertex = new Vertex(x2, y2);
-            Vertex thirdVertex = new Vertex(x3, y3);
+            Vertex firstVertex = checkCoordinates(new Vertex(x1, y1));
+            Vertex secondVertex = checkCoordinates(new Vertex(x2, y2));
+            Vertex thirdVertex = checkCoordinates(new Vertex(x3, y3));
             this.add(firstVertex, secondVertex, thirdVertex);
         } catch (IllegalArgumentException e) {
             this.error(e.getMessage());
@@ -86,13 +98,24 @@ public class Storage {
     }
 
     public void clear() {
+        this.clicks.clear();
         this.polygons.clear();
-        this.logger.log("Field is clear.");
         this.lowlight();
+        this.logger.log("Field is clear.");
     }
 
     private void error(String errorMessage) {
         logger.log("[ERROR] " + errorMessage);
+    }
+
+
+    private Vertex checkCoordinates(Vertex vertex) throws IllegalArgumentException {
+        if (vertex.x > Globals.maxCoordinateX || vertex.x < Globals.minCoordinateX){
+            throw new IllegalArgumentException(String.format("Coordinate x must be between %.2f and %.2f.", Globals.maxCoordinateX, Globals.minCoordinateX));
+        }
+        if (vertex.y > Globals.maxCoordinateY || vertex.y < Globals.minCoordinateY){
+            throw new IllegalArgumentException(String.format("Coordinate y must be between %.2f and %.2f.", Globals.maxCoordinateY, Globals.minCoordinateY));        }
+        return vertex;
     }
 
     private Vertex generateVertex(CoordinateRanges ranges) {
@@ -148,6 +171,9 @@ public class Storage {
 
     public ArrayList<DrawInfo> getDrawInfo() {
         ArrayList<DrawInfo> drawInfo = new ArrayList<>();
+        for (Vertex click : this.clicks) {
+            drawInfo.add(click.getDrawInfo());
+        }
         for (Polygon polygon : this.polygons) {
             drawInfo.add(polygon.getDrawInfo());
         }

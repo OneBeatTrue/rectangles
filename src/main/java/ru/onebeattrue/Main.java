@@ -4,8 +4,6 @@ import ru.onebeattrue.services.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,7 +23,7 @@ public class Main {
 
         LoggerPanel logger = new LoggerPanel(labelFont);
         Storage storage = new Storage(logger);
-        DrawingPanel drawingPanel = new DrawingPanel(storage, logger, gridFont);
+        DrawingPanel drawingPanel = new DrawingPanel(storage, gridFont);
         JPanel inputPanel = new InputPanel(labelFont, buttonFont, storage, drawingPanel);
         JPanel bottomPanel = new BottomPanel(buttonFont, storage, drawingPanel, logger);
 
